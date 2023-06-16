@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: tel_notifier
+    volumes:
+      - ./logs:/app/logs
+      - /app/node_modules
+      - ./:/app
+    ports:
+      - '8080:8080'
+    env_file:
+      - ./.env
+  npm:
+    image: node:18
+    working_dir: /app
+    entrypoint: [ "npm" ]
+    volumes:
+      - ./:/app
+
+volumes:
+  logs:
