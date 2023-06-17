@@ -8,12 +8,14 @@ const server = http.createServer(app);
 const serverPort = process.env.SERVER_PORT;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
-const MESSAGE_ID = process.env.MESSAGE_ID;
+const OPEN_MESSAGE_ID = process.env.OPEN_MESSAGE_ID;
+const CLOSE_MESSAGE_ID = process.env.CLOSE_MESSAGE_ID;
 
 
 app.get('/tel-notif', (req, res) => {
     let message = req.query.message;//chat_id is group id and reply_to_message_id is the topic created message id
-    axios.get(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${message}&reply_to_message_id=${MESSAGE_ID}`);
+    let topic = message == 'close' ? CLOSE_MESSAGE_ID : OPEN_MESSAGE_ID;
+    axios.get(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${message}&reply_to_message_id=${topic}`);
     res.send('success');
 });
 
