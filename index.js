@@ -21,6 +21,7 @@ app.get('/tel-notif', (req, res) => {
         res.send('success');
         return;
     }
+    lastSentTime = currentTime;
     let message = req.query.message;//chat_id is group id and reply_to_message_id is the topic created message id
     let payload = req.query.payload;
     let topic = message == 'close' ? CLOSE_MESSAGE_ID : OPEN_MESSAGE_ID;
