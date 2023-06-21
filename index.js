@@ -11,8 +11,16 @@ const CHAT_ID = process.env.CHAT_ID;
 const OPEN_MESSAGE_ID = process.env.OPEN_MESSAGE_ID;
 const CLOSE_MESSAGE_ID = process.env.CLOSE_MESSAGE_ID;
 
+var lastSentTime = 0;
+const delayThreshold = 60000;
 
 app.get('/tel-notif', (req, res) => {
+    const currentTime = Date.now();
+    const timeSinceLastSent = currentTime - lastSentTime;
+    if (timeSinceLastSent < delayThreshold) {
+        res.send('success');
+        return;
+    }
     let message = req.query.message;//chat_id is group id and reply_to_message_id is the topic created message id
     let payload = req.query.payload;
     let topic = message == 'close' ? CLOSE_MESSAGE_ID : OPEN_MESSAGE_ID;
