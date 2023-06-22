@@ -7,6 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const authHandler = require('./routes/auth');
 const apiHandler = require('./routes/api');
+const auth = require('./utils/jwt');
 const serverPort = process.env.SERVER_PORT;
 
 app.use(express.json());
