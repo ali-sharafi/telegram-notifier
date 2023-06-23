@@ -18,11 +18,16 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING
     },
     enabled: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
+    is_logged_in: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
     captcha_used_count: {
         type: DataTypes.INTEGER,
-        default: 0
+        defaultValue: 0
     },
 }, {
     createdAt: 'created_at',

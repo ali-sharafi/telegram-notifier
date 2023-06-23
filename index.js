@@ -8,6 +8,7 @@ const server = http.createServer(app);
 const authHandler = require('./routes/auth');
 const apiHandler = require('./routes/api');
 const auth = require('./utils/jwt');
+const sequelize = require('./utils/database');
 const serverPort = process.env.SERVER_PORT;
 
 app.use(express.json());
@@ -17,13 +18,13 @@ app.use('/api', apiHandler);
 
 app.use(function (err, req, res, next) {
     if (err instanceof UnauthorizedError) {
-        res.status(200).json({ message: 'invalid token...', unauthorized: true });
+        res.status(500).json({ message: 'invalid token...', unauthorized: true });
     } else console.log('error: ', err);
 });
 
 const startApp = async () => {
     console.log('SETUP HTTP ROUTE HANDLERS...');
-
+    await sequelize.sync();
     server.listen(serverPort, () => console.log(`DONE! APP STARTED ON PORT ${serverPort}!`));
 }
 

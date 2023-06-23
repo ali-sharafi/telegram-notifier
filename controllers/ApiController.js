@@ -26,20 +26,26 @@ const ApiController = class {
         res.send('success');
     }
 
-    async updateUser(userID, sorareID) {
-        User
-            .findOne({
-                where: {
-                    id: userID
-                }
-            })
-            .then(function (user) {
-                if (user)
-                    return user.update({
-                        last_request: getDateTime(),
-                        ...user.sorare_id ? {} : { sorare_id: sorareID }
-                    });
-            })
+    async updateUser(auth, res) {
+        const twentyFourHoursAgo = new Date();
+        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+        let user = await User.findOne({
+            where: {
+                id: auth.sub,
+            }
+        });
+        if (user) {
+            if (!user.updatedAt) {
+                User.update(
+                    { updatedAt: new Date() },
+                    { where: { id: auth.sub } }
+                )
+            } else if (new Date(user.updatedAt) > twentyFourHoursAgo) {
+                return res.status(400).json({ message: 'You can not update your info after 24 hours.' });
+            }
+            return res.status(200).json({ success: true });
+        }
+        res.status(400).json({ message: 'We could not find your account.' });
     }
 }
 

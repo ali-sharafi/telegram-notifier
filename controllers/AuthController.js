@@ -35,11 +35,16 @@ const AuthController = class {
         const user = await User.findOne({
             where: {
                 email,
-                enabled: 1
+                enabled: 1,
+                is_logged_in: false
             }
         })
         if (user && bcrypt.compareSync(password, user.password)) {
             const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+            User.update(
+                { is_logged_in: true },
+                { where: { id: user.id } }
+            )
             return {
                 email: user.email,
                 token
