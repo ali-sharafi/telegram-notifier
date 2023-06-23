@@ -27,8 +27,6 @@ const ApiController = class {
     }
 
     async updateUser(auth, res) {
-        const twentyFourHoursAgo = new Date();
-        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
         let user = await User.findOne({
             where: {
                 id: auth.sub,
@@ -40,14 +38,22 @@ const ApiController = class {
                     { updated_at: new Date() },
                     { where: { id: auth.sub } }
                 )
-                return res.status(200).json({ success: true });
-            } else if (new Date(user.updated_at) < twentyFourHoursAgo) {
+                return res.json({ success: true });
+            } else if (this.isMoreThan24Hours(user.updated_at)) {
                 return res.status(400).json({ message: 'You can not update your info after 24 hours.' });
             }
-            res.status(200).json({ success: true });
+            res.json({ success: true });
             return
         }
         res.status(400).json({ message: 'We could not find your account.' });
+    }
+
+    isMoreThan24Hours(updatedAt) {
+        const lastModifiedAt = new Date(updatedAt);
+        const now = new Date();
+        const timeDifference = now - lastModifiedAt;
+        const hoursDifference = timeDifference / (1000 * 60 * 60);
+        return hoursDifference > 24;
     }
 }
 
