@@ -11,6 +11,10 @@ const auth = require('./utils/jwt');
 const sequelize = require('./utils/database');
 const serverPort = process.env.SERVER_PORT;
 
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+
 app.use(express.json());
 app.use('/auth', authHandler);
 app.use(auth())
