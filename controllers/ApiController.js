@@ -9,6 +9,8 @@ const L_OPEN_MESSAGE_ID = process.env.L_OPEN_MESSAGE_ID;
 const L_CLOSE_MESSAGE_ID = process.env.L_CLOSE_MESSAGE_ID;
 const SCH_OPEN_MESSAGE_ID = process.env.SCH_OPEN_MESSAGE_ID;
 const SCH_CLOSE_MESSAGE_ID = process.env.SCH_CLOSE_MESSAGE_ID;
+const ST_OPEN_MESSAGE_ID = process.env.ST_OPEN_MESSAGE_ID;
+const ST_CLOSE_MESSAGE_ID = process.env.ST_CLOSE_MESSAGE_ID;
 var lastSentTime = {
     '2': 0,
     '3': 0,
@@ -57,15 +59,16 @@ const ApiController = class {
     }
 
     getTopicID(type, message) {
-        if (type) {
-            if (type == '3') {//L-Topic
+        switch (type) {
+            case '3'://L-Topic
                 return message == 'close' ? L_CLOSE_MESSAGE_ID : L_OPEN_MESSAGE_ID;
-            } else if (type == '2') {//SCh-Topic
+            case '2'://SCh-Topic
                 return message == 'close' ? SCH_CLOSE_MESSAGE_ID : SCH_OPEN_MESSAGE_ID;
-            }
+            case '1'://ST-Topic
+                return message == 'close' ? ST_CLOSE_MESSAGE_ID : ST_OPEN_MESSAGE_ID;
+            default:
+                return message == 'close' ? L_CLOSE_MESSAGE_ID : L_OPEN_MESSAGE_ID;
         }
-
-        return message == 'close' ? L_CLOSE_MESSAGE_ID : L_OPEN_MESSAGE_ID;
     }
 
     isMoreThan24Hours(updatedAt) {
